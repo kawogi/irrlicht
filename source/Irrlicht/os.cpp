@@ -11,11 +11,6 @@
 	#define bswap_16(X) SDL_Swap16(X)
 	#define bswap_32(X) SDL_Swap32(X)
 	#define bswap_64(X) SDL_Swap64(X)
-#elif defined(_IRR_WINDOWS_API_) && defined(_MSC_VER)
-	#include <stdlib.h>
-	#define bswap_16(X) _byteswap_ushort(X)
-	#define bswap_32(X) _byteswap_ulong(X)
-	#define bswap_64(X) _byteswap_uint64(X)
 #elif defined(__FreeBSD__)
 	#include <sys/endian.h>
 	#define bswap_16(X) bswap16(X)
@@ -26,7 +21,7 @@
 	#define bswap_16(X) letoh16(X)
 	#define bswap_32(X) letoh32(X)
 	#define bswap_64(X) letoh64(X)
-#elif !defined(_IRR_SOLARIS_PLATFORM_) && !defined(__PPC__) && !defined(_IRR_WINDOWS_API_)
+#elif !defined(_IRR_SOLARIS_PLATFORM_) && !defined(__PPC__)
 	#include <byteswap.h>
 #else
 	#define bswap_16(X) ((((X)&0xFF) << 8) | (((X)&0xFF00) >> 8))
@@ -48,54 +43,7 @@ namespace os
 }
 }
 
-#if defined(_IRR_WINDOWS_API_)
-// ----------------------------------------------------------------
-// Windows specific functions
-// ----------------------------------------------------------------
-
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#include <time.h>
-
-namespace irr
-{
-namespace os
-{
-	//! prints a debuginfo string
-	void Printer::print(const c8* message, ELOG_LEVEL ll)
-	{
-		core::stringc tmp(message);
-		tmp += "\n";
-		OutputDebugStringA(tmp.c_str());
-		printf("%s", tmp.c_str());
-	}
-
-	static LARGE_INTEGER HighPerformanceFreq;
-	static BOOL HighPerformanceTimerSupport = FALSE;
-
-	void Timer::initTimer()
-	{
-		HighPerformanceTimerSupport = QueryPerformanceFrequency(&HighPerformanceFreq);
-		initVirtualTimer();
-	}
-
-	u32 Timer::getRealTime()
-	{
-		if (HighPerformanceTimerSupport)
-		{
-			LARGE_INTEGER nTime;
-			BOOL queriedOK = QueryPerformanceCounter(&nTime);
-
-			if(queriedOK)
-				return u32((nTime.QuadPart) * 1000 / HighPerformanceFreq.QuadPart);
-		}
-
-		return GetTickCount();
-	}
-
-} // end namespace os
-
-#elif defined(_IRR_EMSCRIPTEN_PLATFORM_)
+#if defined(_IRR_EMSCRIPTEN_PLATFORM_)
 
 // ----------------------------------------------------------------
 // emscripten version

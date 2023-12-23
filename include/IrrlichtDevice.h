@@ -304,7 +304,6 @@ namespace irr
 		when loading a large scene. Clearing the message loop prevents that mouse- or buttonclicks which users
 		have pressed in the meantime will now trigger unexpected actions in the gui. <br>
 		So far the following messages are cleared:<br>
-		Win32: All keyboard and mouse messages<br>
 		Linux: All keyboard and mouse messages<br>
 		All other devices are not yet supported here.<br>
 		The function is still somewhat experimental, as the kind of messages we clear is based on just a few use-cases.

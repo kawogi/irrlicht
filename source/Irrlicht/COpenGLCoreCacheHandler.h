@@ -177,14 +177,7 @@ class COpenGLCoreCacheHandler
 public:
 	COpenGLCoreCacheHandler(TOpenGLDriver* driver) :
 		Driver(driver),
-#if defined(_MSC_VER)
-#pragma warning(push)
-#pragma warning(disable: 4355)	// Warning: "'this' : used in base member initializer list. ". It's OK, we don't use the reference in STextureCache constructor.
-#endif
 		TextureCache(STextureCache(*this, driver->getDriverType(), driver->getFeature().MaxTextureUnits)),
-#if defined(_MSC_VER)
-#pragma warning(pop)
-#endif
 		FrameBufferCount(0), BlendEquation(0), BlendSourceRGB(0),
 		BlendDestinationRGB(0), BlendSourceAlpha(0), BlendDestinationAlpha(0), Blend(0), BlendEquationInvalid(false), BlendFuncInvalid(false), BlendInvalid(false),
 		ColorMask(0), ColorMaskInvalid(false), CullFaceMode(GL_BACK), CullFace(false), DepthFunc(GL_LESS), DepthMask(true), DepthTest(false), FrameBufferID(0),

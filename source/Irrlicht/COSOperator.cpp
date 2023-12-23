@@ -4,13 +4,9 @@
 
 #include "COSOperator.h"
 
-#ifdef _IRR_WINDOWS_API_
-#include <windows.h>
-#else
 #include <string.h>
 #include <unistd.h>
 #include <sys/types.h>
-#endif
 
 #if defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
 #include <SDL_clipboard.h>
@@ -79,28 +75,6 @@ void COSOperator::copyToClipboard(const c8 *text) const
 #if defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
 	SDL_SetClipboardText(text);
 
-#elif defined(_IRR_WINDOWS_API_)
-	if (!OpenClipboard(NULL) || text == 0)
-		return;
-
-	EmptyClipboard();
-
-	core::stringw tempbuffer;
-	core::utf8ToWString(tempbuffer, text);
-	const u32 size = (tempbuffer.size() + 1) * sizeof(wchar_t);
-
-	HGLOBAL clipbuffer;
-	void * buffer;
-
-	clipbuffer = GlobalAlloc(GMEM_MOVEABLE, size);
-	buffer = GlobalLock(clipbuffer);
-
-	memcpy(buffer, tempbuffer.c_str(), size);
-
-	GlobalUnlock(clipbuffer);
-	SetClipboardData(CF_UNICODETEXT, clipbuffer);
-	CloseClipboard();
-
 #elif defined(_IRR_COMPILE_WITH_X11_DEVICE_)
     if ( IrrDeviceLinux )
         IrrDeviceLinux->copyToClipboard(text);
@@ -134,22 +108,6 @@ const c8* COSOperator::getTextFromClipboard() const
 	SDL_free(ClipboardSelectionText);
 	ClipboardSelectionText = SDL_GetClipboardText();
 	return ClipboardSelectionText;
-
-#elif defined(_IRR_WINDOWS_API_)
-	if (!OpenClipboard(NULL))
-		return 0;
-
-	wchar_t * buffer = 0;
-
-	HANDLE hData = GetClipboardData( CF_UNICODETEXT );
-	buffer = (wchar_t*) GlobalLock( hData );
-
-	core::wStringToUTF8(ClipboardBuf, buffer);
-
-	GlobalUnlock( hData );
-	CloseClipboard();
-
-	return ClipboardBuf.c_str();
 
 #elif defined(_IRR_COMPILE_WITH_X11_DEVICE_)
     if ( IrrDeviceLinux )
@@ -190,21 +148,7 @@ const c8* COSOperator::getTextFromPrimarySelection() const
 
 bool COSOperator::getSystemMemory(u32* Total, u32* Avail) const
 {
-#if defined(_IRR_WINDOWS_API_)
-
-	MEMORYSTATUSEX MemoryStatusEx;
- 	MemoryStatusEx.dwLength = sizeof(MEMORYSTATUSEX);
-
-	// cannot fail
-	GlobalMemoryStatusEx(&MemoryStatusEx);
-
-	if (Total)
-		*Total = (u32)(MemoryStatusEx.ullTotalPhys>>10);
-	if (Avail)
-		*Avail = (u32)(MemoryStatusEx.ullAvailPhys>>10);
-	return true;
-
-#elif defined(_IRR_POSIX_API_) && defined(_SC_PHYS_PAGES) && defined(_SC_AVPHYS_PAGES)
+#if defined(_IRR_POSIX_API_) && defined(_SC_PHYS_PAGES) && defined(_SC_AVPHYS_PAGES)
         long ps = sysconf(_SC_PAGESIZE);
         long pp = sysconf(_SC_PHYS_PAGES);
         long ap = sysconf(_SC_AVPHYS_PAGES);

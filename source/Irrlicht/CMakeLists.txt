@@ -39,19 +39,6 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "^(GNU|Clang|AppleClang)$")
 			add_compile_options(-mfpmath=sse -msse)
 		endif()
 	endif()
-
-elseif(MSVC)
-	string(APPEND CMAKE_CXX_STANDARD_LIBRARIES " msvcrt.lib") # ???? fuck off
-
-	add_compile_options(/GR- /Zl)
-
-	# Enable SSE for floating point math on 32-bit x86 by default
-	# reasoning see minetest issue #11810 and https://gcc.gnu.org/wiki/FloatingPointMath
-	if(CMAKE_SIZEOF_VOID_P EQUAL 4)
-		add_compile_options(/arch:SSE)
-	endif()
-
-	add_compile_options(/D_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING)
 endif()
 
 # Sanity-check version
@@ -81,10 +68,7 @@ endif()
 
 # Device
 
-if(WIN32)
-	add_definitions(-D_IRR_WINDOWS_ -D_IRR_WINDOWS_API_)
-	set(DEVICE "WINDOWS")
-elseif(EMSCRIPTEN)
+if(EMSCRIPTEN)
 	add_definitions(-D_IRR_EMSCRIPTEN_PLATFORM_ -D_IRR_COMPILE_WITH_EGL_MANAGER_)
 	set(LINUX_PLATFORM TRUE)
 	set(DEVICE "SDL")
@@ -163,9 +147,7 @@ endif()
 
 if(ENABLE_OPENGL)
 	add_definitions(-D_IRR_COMPILE_WITH_OPENGL_)
-	if(DEVICE STREQUAL "WINDOWS")
-		add_definitions(-D_IRR_COMPILE_WITH_WGL_MANAGER_ -D_IRR_OPENGL_USE_EXTPOINTER_)
-	elseif(DEVICE STREQUAL "X11")
+	if(DEVICE STREQUAL "X11")
 		add_definitions(-D_IRR_COMPILE_WITH_GLX_MANAGER_ -D_IRR_OPENGL_USE_EXTPOINTER_)
 	elseif(DEVICE STREQUAL "SDL")
 		add_definitions(-D_IRR_OPENGL_USE_EXTPOINTER_)
@@ -329,7 +311,6 @@ add_library(IRROBJ OBJECT
 set(IRRDRVROBJ
 	CNullDriver.cpp
 	CGLXManager.cpp
-	CWGLManager.cpp
 	CEGLManager.cpp
 	CSDLManager.cpp
 	mt_opengl_loader.cpp
@@ -417,7 +398,6 @@ add_library(IRROTHEROBJ OBJECT
 	CIrrDeviceSDL.cpp
 	CIrrDeviceLinux.cpp
 	CIrrDeviceStub.cpp
-	CIrrDeviceWin32.cpp
 	CLogger.cpp
 	COSOperator.cpp
 	Irrlicht.cpp
@@ -484,9 +464,6 @@ target_include_directories(IrrlichtMt
 
 target_link_libraries(IrrlichtMt PRIVATE ${link_libs})
 
-if(WIN32)
-	target_compile_definitions(IrrlichtMt INTERFACE _IRR_WINDOWS_API_) # used in _IRR_DEBUG_BREAK_IF definition in a public header
-endif()
 target_compile_definitions(IrrlichtMt INTERFACE "IRRLICHT_API=${API_IMPORT}")
 if(EMSCRIPTEN)
 	target_compile_definitions(IrrlichtMt PUBLIC IRR_MOBILE_PATHS)

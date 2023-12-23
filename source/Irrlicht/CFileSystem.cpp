@@ -20,11 +20,7 @@
     #error Compiling with __STRICT_ANSI__ not supported. g++ does set this when compiling with -std=c++11 or -std=c++0x. Use instead -std=gnu++11 or -std=gnu++0x. Or use -U__STRICT_ANSI__ to disable strict ansi.
 #endif
 
-#if defined (_IRR_WINDOWS_API_)
-	#include <direct.h> // for _chdir
-	#include <io.h> // for _access
-	#include <tchar.h>
-#elif (defined(_IRR_POSIX_API_))
+#if (defined(_IRR_POSIX_API_))
 		#include <stdio.h>
 		#include <stdlib.h>
 		#include <string.h>
@@ -458,13 +454,6 @@ const io::path& CFileSystem::getWorkingDirectory()
 	}
 	else
 	{
-		#if defined(_IRR_WINDOWS_API_)
-			fschar_t tmp[_MAX_PATH];
-				_getcwd(tmp, _MAX_PATH);
-				WorkingDirectory[FILESYSTEM_NATIVE] = tmp;
-				WorkingDirectory[FILESYSTEM_NATIVE].replace('\\', '/');
-		#endif
-
 		#if (defined(_IRR_POSIX_API_))
 
 			// getting the CWD is rather complex as we do not know the size
@@ -508,12 +497,7 @@ bool CFileSystem::changeWorkingDirectoryTo(const io::path& newDirectory)
 	else
 	{
 		WorkingDirectory[FILESYSTEM_NATIVE] = newDirectory;
-
-#if defined(_MSC_VER)
-		success = (_chdir(newDirectory.c_str()) == 0);
-#else
 		success = (chdir(newDirectory.c_str()) == 0);
-#endif
 	}
 
 	return success;
@@ -524,14 +508,7 @@ io::path CFileSystem::getAbsolutePath(const io::path& filename) const
 {
 	if ( filename.empty() )
 		return filename;
-#if defined(_IRR_WINDOWS_API_)
-	fschar_t *p=0;
-	fschar_t fpath[_MAX_PATH];
-		p = _fullpath(fpath, filename.c_str(), _MAX_PATH);
-		core::stringc tmp(p);
-		tmp.replace('\\', '/');
-	return tmp;
-#elif (defined(_IRR_POSIX_API_))
+#if (defined(_IRR_POSIX_API_))
 	c8* p=0;
 	c8 fpath[4096];
 	fpath[0]=0;
@@ -669,32 +646,8 @@ path CFileSystem::getRelativeFilename(const path& filename, const path& director
 	it1=list1.begin();
 	it2=list2.begin();
 
-	#if defined (_IRR_WINDOWS_API_)
-	fschar_t partition1 = 0, partition2 = 0;
-	io::path prefix1, prefix2;
-	if ( it1 != list1.end() )
-		prefix1 = *it1;
-	if ( it2 != list2.end() )
-		prefix2 = *it2;
-	if ( prefix1.size() > 1 && prefix1[1] == _IRR_TEXT(':') )
-		partition1 = core::locale_lower(prefix1[0]);
-	if ( prefix2.size() > 1 && prefix2[1] == _IRR_TEXT(':') )
-		partition2 = core::locale_lower(prefix2[0]);
-
-	// must have the same prefix or we can't resolve it to a relative filename
-	if ( partition1 != partition2 )
-	{
-		return filename;
-	}
-	#endif
-
-
 	for (; it1 != list1.end() && it2 != list2.end()
-#if defined (_IRR_WINDOWS_API_)
-		&& (io::path(*it1).make_lower()==io::path(*it2).make_lower())
-#else
 		&& (*it1==*it2)
-#endif
 		;)
 	{
 		++it1;
@@ -739,33 +692,6 @@ IFileList* CFileSystem::createFileList()
 	//! Construct from native filesystem
 	if (FileSystemType == FILESYSTEM_NATIVE)
 	{
-		// --------------------------------------------
-		//! Windows version
-		#ifdef _IRR_WINDOWS_API_
-
-		r = new CFileList(Path, true, false);
-
-		// TODO: Should be unified once mingw adapts the proper types
-#if defined(__GNUC__)
-		long hFile; //mingw return type declaration
-#else
-		intptr_t hFile;
-#endif
-
-		struct _tfinddata_t c_file;
-		if( (hFile = _tfindfirst( _T("*"), &c_file )) != -1L )
-		{
-			do
-			{
-				r->addItem(Path + c_file.name, 0, c_file.size, (_A_SUBDIR & c_file.attrib) != 0, 0);
-			}
-			while( _tfindnext( hFile, &c_file ) == 0 );
-
-			_findclose( hFile );
-		}
-
-		#endif
-
 		// --------------------------------------------
 		//! Linux version
 		#if (defined(_IRR_POSIX_API_))
@@ -859,9 +785,7 @@ bool CFileSystem::existFile(const io::path& filename) const
 		if (FileArchives[i]->getFileList()->findFile(filename)!=-1)
 			return true;
 
-#if defined(_MSC_VER)
-		return (_access(filename.c_str(), 0) != -1);
-#elif defined(F_OK)
+#if defined(F_OK)
 		return (access(filename.c_str(), F_OK) != -1);
 #else
 	return (access(filename.c_str(), 0) != -1);

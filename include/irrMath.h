@@ -364,11 +364,7 @@ namespace core
 	#define	F32_A_GREATER_B(a,b)	((a) > (b))
 
 #ifndef REALINLINE
-	#ifdef _MSC_VER
-		#define REALINLINE __forceinline
-	#else
-		#define REALINLINE inline
-	#endif
+	#define REALINLINE inline
 #endif
 
 

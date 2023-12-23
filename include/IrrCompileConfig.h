@@ -19,11 +19,7 @@
 
 #include <stdio.h> // TODO: Although included elsewhere this is required at least for mingw
 
-#ifdef _WIN32
-#define IRRCALLCONV __stdcall
-#else
 #define IRRCALLCONV
-#endif
 
 #ifndef IRRLICHT_API
 #define IRRLICHT_API

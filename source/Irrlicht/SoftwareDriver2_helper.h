@@ -13,11 +13,7 @@
 #include "SMaterial.h"
 
 #ifndef REALINLINE
-#ifdef _MSC_VER
-#define REALINLINE __forceinline
-#else
 #define REALINLINE inline
-#endif
 #endif
 
 

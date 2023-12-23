@@ -61,13 +61,8 @@ typedef double				f64;
 //! standard on Windows platforms.
 //! We want int snprintf_irr(char *str, size_t size, const char *format, ...);
 //! and int swprintf_irr(wchar_t *wcs, size_t maxlen, const wchar_t *format, ...);
-#if defined(_MSC_VER)
-#define swprintf_irr swprintf_s
-#define snprintf_irr sprintf_s
-#else
 #define swprintf_irr swprintf
 #define snprintf_irr snprintf
-#endif // _MSC_VER
 
 namespace irr
 {
@@ -80,13 +75,8 @@ namespace irr
 
 //! define a break macro for debugging.
 #if defined(_DEBUG)
-#if defined(_IRR_WINDOWS_API_) && defined(_MSC_VER)
-	#include <crtdbg.h>
-	#define _IRR_DEBUG_BREAK_IF( _CONDITION_ ) if (_CONDITION_) {_CrtDbgBreak();}
-#else
 	#include <assert.h>
 	#define _IRR_DEBUG_BREAK_IF( _CONDITION_ ) assert( !(_CONDITION_) );
-#endif
 #else
 	#define _IRR_DEBUG_BREAK_IF( _CONDITION_ )
 #endif
@@ -100,8 +90,6 @@ For functions:		template<class T> _IRR_DEPRECATED_ void test4(void) {}
 **/
 #if defined(IGNORE_DEPRECATED_WARNING)
 #define _IRR_DEPRECATED_
-#elif defined(_MSC_VER)
-#define _IRR_DEPRECATED_ __declspec(deprecated)
 #elif defined(__GNUC__)
 #define _IRR_DEPRECATED_  __attribute__ ((deprecated))
 #else

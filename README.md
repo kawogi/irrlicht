@@ -33,27 +33,11 @@ e.g. on a Linux system you might want to build for local use like this:
 	make -j$(nproc)
 
 This will put an IrrlichtMtTargets.cmake file into the cmake directory in the current build directory, and it can then be imported from another project by pointing `find_package()` to the build directory, or by setting the `CMAKE_PREFIX_PATH` variable to that same path.
-
-on Windows system:
-
-It is highly recommended to use vcpkg as package manager.
-
-After you successfully built vcpkg you can easily install the required libraries:
-
-	vcpkg install zlib libjpeg-turbo libpng opengl-registry --triplet x64-windows
-	
-Run the following script in PowerShell:
-
-	git clone https://github.com/minetest/irrlicht
-	cd irrlicht
-	cmake -B build -G "Visual Studio 17 2022" -A "Win64" -DCMAKE_TOOLCHAIN_FILE=[vcpkg-root]/scripts/buildsystems/vcpkg.cmake -DBUILD_SHARED_LIBS=OFF
-	cmake --build build --config Release
 	
 Platforms
 ---------
 
 We aim to support these platforms:
-* Windows via MinGW
 * Linux (GL or GLES)
 
 This doesn't mean other platforms don't work or won't be supported, if you find something that doesn't work contributions are welcome.
