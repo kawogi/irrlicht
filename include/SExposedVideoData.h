@@ -45,15 +45,6 @@ struct SExposedVideoData
 		unsigned long GLXWindow;
 	};
 
-    struct SOpenGLOSX
-    {
-        //! The NSOpenGLContext object.
-        void* Context;
-
-        //! The NSWindow object.
-        void* Window;
-    };
-
 	struct SOpenGLFB
 	{
 		//! The EGLNativeWindowType object.
@@ -64,7 +55,6 @@ struct SExposedVideoData
 	{
 		SOpenGLWin32 OpenGLWin32;
 		SOpenGLLinux OpenGLLinux;
-		SOpenGLOSX OpenGLOSX;
 		SOpenGLFB OpenGLFB;
 	};
 };

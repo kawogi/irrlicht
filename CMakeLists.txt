@@ -21,9 +21,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include(GNUInstallDirs)
 
-if(APPLE)
-	set(sysname OSX)
-elseif(MSVC)
+if(MSVC)
 	set(sysname Win32-VisualStudio)
 elseif(WIN32)
 	set(sysname Win32-gcc)

@@ -8,8 +8,6 @@
 if(WIN32)
 	find_path(OPENGLES2_INCLUDE_DIR GLES2/gl2.h)
 	find_library(OPENGLES2_LIBRARY libGLESv2)
-elseif(APPLE)
-	find_library(OPENGLES2_LIBRARY OpenGLES REQUIRED) # framework
 else()
 	# Unix
 	find_path(OPENGLES2_INCLUDE_DIR GLES2/gl2.h

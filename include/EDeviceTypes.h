@@ -21,10 +21,6 @@ namespace irr
 		other operating systems which support X11. */
 		EIDT_X11,
 
-		//! A device native to Mac OSX
-		/** This device uses Apple's Cocoa API and works in Mac OSX 10.2 and above. */
-		EIDT_OSX,
-
 		//! A device which uses Simple DirectMedia Layer
 		/** The SDL device works under all platforms supported by SDL but first must be compiled
 		in by setting the USE_SDL2 CMake option to ON */

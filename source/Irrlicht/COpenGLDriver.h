@@ -11,7 +11,6 @@ namespace irr
 	class CIrrDeviceWin32;
 	class CIrrDeviceLinux;
 	class CIrrDeviceSDL;
-	class CIrrDeviceMacOSX;
 }
 
 #ifdef _IRR_COMPILE_WITH_OPENGL_

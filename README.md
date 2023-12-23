@@ -55,7 +55,6 @@ Platforms
 We aim to support these platforms:
 * Windows via MinGW
 * Linux (GL or GLES)
-* macOS
 
 This doesn't mean other platforms don't work or won't be supported, if you find something that doesn't work contributions are welcome.
 

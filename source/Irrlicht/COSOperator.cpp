@@ -10,9 +10,6 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/types.h>
-#ifdef _IRR_OSX_PLATFORM_
-#include <sys/sysctl.h>
-#endif
 #endif
 
 #if defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
@@ -20,9 +17,6 @@
 #include <SDL_version.h>
 #elif defined(_IRR_COMPILE_WITH_X11_DEVICE_)
 #include "CIrrDeviceLinux.h"
-#endif
-#if defined(_IRR_COMPILE_WITH_OSX_DEVICE_)
-#import <Cocoa/Cocoa.h>
 #endif
 
 #include "fast_atof.h"
@@ -107,18 +101,6 @@ void COSOperator::copyToClipboard(const c8 *text) const
 	SetClipboardData(CF_UNICODETEXT, clipbuffer);
 	CloseClipboard();
 
-#elif defined(_IRR_COMPILE_WITH_OSX_DEVICE_)
-    NSString *str = nil;
-    NSPasteboard *board = nil;
-
-    if ((text != NULL) && (strlen(text) > 0))
-    {
-        str = [NSString stringWithCString:text encoding:NSUTF8StringEncoding];
-        board = [NSPasteboard generalPasteboard];
-        [board declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:NSApp];
-        [board setString:str forType:NSStringPboardType];
-    }
-
 #elif defined(_IRR_COMPILE_WITH_X11_DEVICE_)
     if ( IrrDeviceLinux )
         IrrDeviceLinux->copyToClipboard(text);
@@ -168,19 +150,6 @@ const c8* COSOperator::getTextFromClipboard() const
 	CloseClipboard();
 
 	return ClipboardBuf.c_str();
-
-#elif defined(_IRR_COMPILE_WITH_OSX_DEVICE_)
-    NSString* str = nil;
-    NSPasteboard* board = nil;
-    char* result = 0;
-
-    board = [NSPasteboard generalPasteboard];
-    str = [board stringForType:NSStringPboardType];
-
-    if (str != nil)
-        result = (char*)[str cStringUsingEncoding:NSUTF8StringEncoding];
-
-    return (result);
 
 #elif defined(_IRR_COMPILE_WITH_X11_DEVICE_)
     if ( IrrDeviceLinux )
@@ -247,22 +216,6 @@ bool COSOperator::getSystemMemory(u32* Total, u32* Avail) const
 		*Total = (u32)((pp>>10)*ps);
 	if (Avail)
 		*Avail = (u32)((ap>>10)*ps);
-	return true;
-#elif defined(_IRR_OSX_PLATFORM_)
-	int mib[2];
-	int64_t physical_memory;
-	size_t length;
-
-	// Get the Physical memory size
-	mib[0] = CTL_HW;
-	mib[1] = HW_MEMSIZE;
-	length = sizeof(int64_t);
-	sysctl(mib, 2, &physical_memory, &length, NULL, 0);
-
-	if (Total)
-		*Total = (u32)(physical_memory>>10);
-	if (Avail)
-		*Avail = (u32)(physical_memory>>10); // we don't know better
 	return true;
 #else
 	// TODO: implement for others
