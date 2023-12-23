@@ -60,19 +60,12 @@ struct SExposedVideoData
 		void* Window;
 	};
 
-	struct SOGLESAndroid
-	{
-		//! The ANativeWindow object.
-		void* Window;
-	};
-
 	union
 	{
 		SOpenGLWin32 OpenGLWin32;
 		SOpenGLLinux OpenGLLinux;
 		SOpenGLOSX OpenGLOSX;
 		SOpenGLFB OpenGLFB;
-		SOGLESAndroid OGLESAndroid;
 	};
 };
 

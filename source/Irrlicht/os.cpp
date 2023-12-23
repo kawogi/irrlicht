@@ -100,70 +100,6 @@ namespace os
 
 } // end namespace os
 
-
-#elif defined( _IRR_ANDROID_PLATFORM_ )
-
-// ----------------------------------------------------------------
-// Android version
-// ----------------------------------------------------------------
-
-#include <android/log.h>
-
-namespace irr
-{
-namespace os
-{
-
-	//! prints a debuginfo string
-	void Printer::print(const c8* message, ELOG_LEVEL ll)
-	{
-		android_LogPriority LogLevel = ANDROID_LOG_UNKNOWN;
-
-		switch (ll)
-		{
-		case ELL_DEBUG:
-			LogLevel = ANDROID_LOG_DEBUG;
-			break;
-		case ELL_INFORMATION:
-			LogLevel = ANDROID_LOG_INFO;
-			break;
-		case ELL_WARNING:
-			LogLevel = ANDROID_LOG_WARN;
-			break;
-		case ELL_ERROR:
-			LogLevel = ANDROID_LOG_ERROR;
-			break;
-		default: // ELL_NONE
-			LogLevel = ANDROID_LOG_VERBOSE;
-			break;
-		}
-
-		// Android logcat restricts log-output and cuts the rest of the message away. But we want it all.
-		// On my device max-len is 1023 (+ 0 byte). Some websites claim a limit of 4096 so maybe different numbers on different devices.
-		const size_t maxLogLen = 1023;
-		size_t msgLen = strlen(message);
-		size_t start = 0;
-		while ( msgLen-start > maxLogLen )
-		{
-			__android_log_print(LogLevel, "Irrlicht", "%.*s\n", maxLogLen, &message[start]);
-			start += maxLogLen;
-		}
-		__android_log_print(LogLevel, "Irrlicht", "%s\n", &message[start]);
-	}
-
-	void Timer::initTimer()
-	{
-		initVirtualTimer();
-	}
-
-	u32 Timer::getRealTime()
-	{
-		timeval tv;
-		gettimeofday(&tv, 0);
-		return (u32)(tv.tv_sec * 1000) + (tv.tv_usec / 1000);
-	}
-} // end namespace os
-
 #elif defined(_IRR_EMSCRIPTEN_PLATFORM_)
 
 // ----------------------------------------------------------------
@@ -250,7 +186,7 @@ namespace os
 	}
 } // end namespace os
 
-#endif // end linux / emscripten / android / windows
+#endif // end linux / emscripten / windows
 
 namespace os
 {

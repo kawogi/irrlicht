@@ -21,9 +21,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include(GNUInstallDirs)
 
-if(ANDROID)
-	set(sysname Android)
-elseif(APPLE)
+if(APPLE)
 	set(sysname OSX)
 elseif(MSVC)
 	set(sysname Win32-VisualStudio)
