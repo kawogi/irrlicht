@@ -39,16 +39,6 @@ namespace irr
 		}
 		#endif
 
-		#ifdef ENABLE_OPENGL3
-		IVideoDriver* createOpenGL3Driver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager);
-		#else
-		static IVideoDriver* createOpenGL3Driver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager)
-		{
-			os::Printer::log("No OpenGL 3 support compiled in.", ELL_ERROR);
-			return nullptr;
-		}
-		#endif
-
 		#ifdef _IRR_COMPILE_WITH_OGLES2_
 		IVideoDriver* createOGLES2Driver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager);
 		#else
@@ -388,7 +378,6 @@ void CIrrDeviceSDL::createDriver()
 	switch(CreationParams.DriverType)
 	{
 	case video::EDT_OPENGL: VideoDriver = video::createOpenGLDriver(CreationParams, FileSystem, ContextManager); break;
-	case video::EDT_OPENGL3: VideoDriver = video::createOpenGL3Driver(CreationParams, FileSystem, ContextManager); break;
 	case video::EDT_OGLES2: VideoDriver = video::createOGLES2Driver(CreationParams, FileSystem, ContextManager); break;
 	default:;
 	}

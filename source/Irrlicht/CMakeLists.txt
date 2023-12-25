@@ -113,12 +113,6 @@ endif()
 
 # OpenGL
 
-if(USE_SDL2)
-	option(ENABLE_OPENGL3 "Enable OpenGL 3+" TRUE)
-else()
-	set(ENABLE_OPENGL3 FALSE)
-endif()
-
 option(ENABLE_OPENGL "Enable OpenGL" TRUE)
 option(ENABLE_GLES2 "Enable OpenGL ES 2+" ${DEFAULT_GLES2})
 
@@ -129,14 +123,6 @@ if(ENABLE_OPENGL)
 	elseif(DEVICE STREQUAL "SDL")
 		add_definitions(-D_IRR_OPENGL_USE_EXTPOINTER_)
 	endif()
-endif()
-
-if(ENABLE_OPENGL3)
-	if (NOT USE_SDL2)
-		message(FATAL_ERROR "OpenGL 3 driver requires SDL2")
-	endif()
-	set(USE_SDLGL ON)
-	set(USE_SDLGL3 ON)
 endif()
 
 if(ENABLE_GLES2)
@@ -161,7 +147,6 @@ endif()
 
 message(STATUS "Device: ${DEVICE}")
 message(STATUS "OpenGL: ${ENABLE_OPENGL}")
-message(STATUS "OpenGL 3: ${ENABLE_OPENGL3}")
 if (USE_SDLGLES2)
 	message(STATUS "OpenGL ES 2: ON (unified)")
 elseif (ENABLE_GLES2)
@@ -180,7 +165,7 @@ find_package(PNG REQUIRED)
 if(ENABLE_GLES2)
 	find_package(OpenGLES2 REQUIRED)
 endif()
-if(ENABLE_OPENGL OR ENABLE_OPENGL3)
+if(ENABLE_OPENGL)
 	find_package(OpenGL REQUIRED)
 endif()
 if(USE_SDL2)
@@ -347,10 +332,6 @@ add_library(IRROTHEROBJ OBJECT
 	Irrlicht.cpp
 	os.cpp
 )
-
-if(ENABLE_OPENGL3)
-	target_compile_definitions(IRROTHEROBJ PRIVATE ENABLE_OPENGL3)
-endif()
 
 if(USE_X11)
 	target_compile_definitions(IRROTHEROBJ PRIVATE _IRR_COMPILE_WITH_X11_)
