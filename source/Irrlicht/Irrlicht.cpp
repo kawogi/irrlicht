@@ -10,10 +10,6 @@ static const char* const copyright = "Irrlicht Engine (c) 2002-2017 Nikolaus Geb
 #include "CIrrDeviceLinux.h"
 #endif
 
-#ifdef _IRR_COMPILE_WITH_SDL_DEVICE_
-#include "CIrrDeviceSDL.h"
-#endif
-
 namespace irr
 {
 	//! stub for calling createDeviceEx
@@ -44,11 +40,6 @@ namespace irr
 #ifdef _IRR_COMPILE_WITH_X11_DEVICE_
 		if (params.DeviceType == EIDT_X11 || (!dev && params.DeviceType == EIDT_BEST))
 			dev = new CIrrDeviceLinux(params);
-#endif
-
-#ifdef _IRR_COMPILE_WITH_SDL_DEVICE_
-		if (params.DeviceType == EIDT_SDL || (!dev && params.DeviceType == EIDT_BEST))
-			dev = new CIrrDeviceSDL(params);
 #endif
 
 		if (dev && !dev->getVideoDriver() && params.DriverType != video::EDT_NULL)

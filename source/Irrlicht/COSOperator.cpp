@@ -8,27 +8,11 @@
 #include <unistd.h>
 #include <sys/types.h>
 
-#if defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
-#include <SDL_clipboard.h>
-#include <SDL_version.h>
-#elif defined(_IRR_COMPILE_WITH_X11_DEVICE_)
+#if defined(_IRR_COMPILE_WITH_X11_DEVICE_)
 #include "CIrrDeviceLinux.h"
 #endif
 
 #include "fast_atof.h"
-
-#if defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
-static const bool sdl_supports_primary_selection = [] {
-#if SDL_VERSION_ATLEAST(2, 25, 0)
-	SDL_version linked_version;
-	SDL_GetVersion(&linked_version);
-	return (linked_version.major == 2 && linked_version.minor >= 25)
-			|| linked_version.major > 2;
-#else
-	return false;
-#endif
-}();
-#endif
 
 namespace irr
 {
@@ -52,10 +36,6 @@ COSOperator::COSOperator(const core::stringc& osVersion) : OperatingSystem(osVer
 
 COSOperator::~COSOperator()
 {
-#ifdef _IRR_COMPILE_WITH_SDL_DEVICE_
-	SDL_free(ClipboardSelectionText);
-	SDL_free(PrimarySelectionText);
-#endif
 }
 
 
@@ -72,10 +52,7 @@ void COSOperator::copyToClipboard(const c8 *text) const
 	if (strlen(text)==0)
 		return;
 
-#if defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
-	SDL_SetClipboardText(text);
-
-#elif defined(_IRR_COMPILE_WITH_X11_DEVICE_)
+#if defined(_IRR_COMPILE_WITH_X11_DEVICE_)
     if ( IrrDeviceLinux )
         IrrDeviceLinux->copyToClipboard(text);
 #endif
@@ -88,13 +65,7 @@ void COSOperator::copyToPrimarySelection(const c8 *text) const
 	if (strlen(text)==0)
 		return;
 
-#if defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
-#if SDL_VERSION_ATLEAST(2, 25, 0)
-	if (sdl_supports_primary_selection)
-		SDL_SetPrimarySelectionText(text);
-#endif
-
-#elif defined(_IRR_COMPILE_WITH_X11_DEVICE_)
+#if defined(_IRR_COMPILE_WITH_X11_DEVICE_)
     if ( IrrDeviceLinux )
         IrrDeviceLinux->copyToPrimarySelection(text);
 #endif
@@ -104,12 +75,7 @@ void COSOperator::copyToPrimarySelection(const c8 *text) const
 //! gets text from the clipboard
 const c8* COSOperator::getTextFromClipboard() const
 {
-#if defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
-	SDL_free(ClipboardSelectionText);
-	ClipboardSelectionText = SDL_GetClipboardText();
-	return ClipboardSelectionText;
-
-#elif defined(_IRR_COMPILE_WITH_X11_DEVICE_)
+#if defined(_IRR_COMPILE_WITH_X11_DEVICE_)
     if ( IrrDeviceLinux )
         return IrrDeviceLinux->getTextFromClipboard();
     return 0;
@@ -124,17 +90,7 @@ const c8* COSOperator::getTextFromClipboard() const
 //! gets text from the primary selection
 const c8* COSOperator::getTextFromPrimarySelection() const
 {
-#if defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
-#if SDL_VERSION_ATLEAST(2, 25, 0)
-	if (sdl_supports_primary_selection) {
-		SDL_free(PrimarySelectionText);
-		PrimarySelectionText = SDL_GetPrimarySelectionText();
-		return PrimarySelectionText;
-	}
-#endif
-	return 0;
-
-#elif defined(_IRR_COMPILE_WITH_X11_DEVICE_)
+#if defined(_IRR_COMPILE_WITH_X11_DEVICE_)
 	if ( IrrDeviceLinux )
 		return IrrDeviceLinux->getTextFromPrimarySelection();
 	return 0;

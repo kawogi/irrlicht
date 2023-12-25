@@ -6,7 +6,7 @@
 #pragma once
 
 #include "IShaderConstantSetCallBack.h"
-#include "IMaterialRendererServices.h"
+#in clude "IMaterialRendererServices.h"
 
 namespace irr
 {

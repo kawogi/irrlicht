@@ -62,12 +62,6 @@ private:
 	CIrrDeviceLinux * IrrDeviceLinux;
 #endif
 
-#ifdef _IRR_COMPILE_WITH_SDL_DEVICE_
-	// These need to be freed with SDL_free
-	mutable char *ClipboardSelectionText = nullptr;
-	mutable char *PrimarySelectionText = nullptr;
-#endif
-
 };
 
 } // end namespace

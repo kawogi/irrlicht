@@ -1,7 +1,4 @@
-set(DEFAULT_SDL2 ON)
-
 option(BUILD_SHARED_LIBS "Build shared library" TRUE)
-option(USE_SDL2 "Use the SDL2 backend" ${DEFAULT_SDL2})
 
 # Compiler flags
 
@@ -81,12 +78,6 @@ if(LINUX_PLATFORM)
 	add_definitions(-D_IRR_LINUX_PLATFORM_)
 endif()
 
-if(USE_SDL2)
-	set(DEVICE "SDL")
-elseif(DEVICE STREQUAL "SDL")
-	message(FATAL_ERROR "SDL was used but not enabled?!")
-endif()
-
 add_definitions("-D_IRR_COMPILE_WITH_${DEVICE}_DEVICE_")
 
 # X11
@@ -120,8 +111,6 @@ if(ENABLE_OPENGL)
 	add_definitions(-D_IRR_COMPILE_WITH_OPENGL_)
 	if(DEVICE STREQUAL "X11")
 		add_definitions(-D_IRR_COMPILE_WITH_GLX_MANAGER_ -D_IRR_OPENGL_USE_EXTPOINTER_)
-	elseif(DEVICE STREQUAL "SDL")
-		add_definitions(-D_IRR_OPENGL_USE_EXTPOINTER_)
 	endif()
 endif()
 
@@ -129,9 +118,6 @@ if(ENABLE_GLES2)
 	add_definitions(-D_IRR_COMPILE_WITH_OGLES2_)
 	if(DEVICE MATCHES "^(WINDOWS|X11)$")
 		add_definitions(-D_IRR_COMPILE_WITH_EGL_MANAGER_ -D_IRR_OGLES2_USE_EXTPOINTER_)
-	elseif(DEVICE STREQUAL "SDL")
-		set(USE_SDLGL ON)
-		set(USE_SDLGLES2 ON)
 	endif()
 endif()
 
@@ -147,9 +133,7 @@ endif()
 
 message(STATUS "Device: ${DEVICE}")
 message(STATUS "OpenGL: ${ENABLE_OPENGL}")
-if (USE_SDLGLES2)
-	message(STATUS "OpenGL ES 2: ON (unified)")
-elseif (ENABLE_GLES2)
+if (ENABLE_GLES2)
 	message(STATUS "OpenGL ES 2: ON (legacy)")
 else()
 	message(STATUS "OpenGL ES 2: OFF")
@@ -168,19 +152,13 @@ endif()
 if(ENABLE_OPENGL)
 	find_package(OpenGL REQUIRED)
 endif()
-if(USE_SDL2)
-	find_package(SDL2 CONFIG REQUIRED)
-	message(STATUS "Found SDL2: ${SDL2_LIBRARIES}")
-endif()
 
 # Platform-specific libs
 
-if(NOT USE_SDL2)
-	# Unix probably
-	find_package(X11 REQUIRED)
-	if(USE_XINPUT2 AND NOT X11_Xi_FOUND)
-		message(FATAL_ERROR "XInput not found")
-	endif()
+# Unix probably
+find_package(X11 REQUIRED)
+if(USE_XINPUT2 AND NOT X11_Xi_FOUND)
+	message(FATAL_ERROR "XInput not found")
 endif()
 
 set(link_includes
@@ -190,7 +168,6 @@ set(link_includes
 	"${ZLIB_INCLUDE_DIR}"
 	"${JPEG_INCLUDE_DIR}"
 	"${PNG_INCLUDE_DIR}"
-	"$<$<BOOL:${USE_SDL2}>:${SDL2_INCLUDE_DIRS}>"
 
 	${OPENGL_INCLUDE_DIR}
 	${OPENGLES2_INCLUDE_DIR}
@@ -204,7 +181,6 @@ set(link_libs
 	"${ZLIB_LIBRARY}"
 	"${JPEG_LIBRARY}"
 	"${PNG_LIBRARY}"
-	"$<$<BOOL:${USE_SDL2}>:${SDL2_LIBRARIES}>"
 
 	${OPENGL_LIBRARIES}
 	${OPENGLES_LIBRARY}
@@ -250,7 +226,6 @@ add_library(IRROBJ OBJECT
 set(IRRDRVROBJ
 	CNullDriver.cpp
 	CGLXManager.cpp
-	CSDLManager.cpp
 	mt_opengl_loader.cpp
 )
 
@@ -282,27 +257,7 @@ add_library(IRRVIDEOOBJ OBJECT
 	${IRRIMAGEOBJ}
 )
 
-if(USE_SDLGL)
-	target_sources(IRRVIDEOOBJ PRIVATE
-		OpenGL/Driver.cpp
-		OpenGL/ExtensionHandler.cpp
-		OpenGL/FixedPipelineRenderer.cpp
-		OpenGL/MaterialRenderer.cpp
-		OpenGL/Renderer2D.cpp
-	)
-endif()
-
-if(USE_SDLGL3)
-	target_sources(IRRVIDEOOBJ PRIVATE
-		OpenGL3/Driver.cpp
-	)
-endif()
-
-if(USE_SDLGLES2)
-	target_sources(IRRVIDEOOBJ PRIVATE
-		OpenGLES2/Driver.cpp
-	)
-elseif(ENABLE_GLES2)
+if(ENABLE_GLES2)
 	target_sources(IRRVIDEOOBJ PRIVATE
 		COGLES2Driver.cpp
 		COGLES2ExtensionHandler.cpp
@@ -324,7 +279,6 @@ add_library(IRRIOOBJ OBJECT
 )
 
 add_library(IRROTHEROBJ OBJECT
-	CIrrDeviceSDL.cpp
 	CIrrDeviceLinux.cpp
 	CIrrDeviceStub.cpp
 	CLogger.cpp

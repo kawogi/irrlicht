@@ -20,9 +20,7 @@ Aside from standard search options (`ZLIB_INCLUDE_DIR`, `ZLIB_LIBRARY`, ...) the
 * `BUILD_SHARED_LIBS` (default: `ON`) - Build IrrlichtMt as a shared library
 * `BUILD_EXAMPLES` (default: `OFF`) - Build example applications
 * `ENABLE_OPENGL` - Enable OpenGL driver
-* `ENABLE_OPENGL3` (default: `OFF`) - Enable OpenGL 3+ driver
 * `ENABLE_GLES2` - Enable OpenGL ES 2+ driver
-* `USE_SDL2` (default: `OFF`) - Use SDL2 instead of native platform device
 
 e.g. on a Linux system you might want to build for local use like this:
 

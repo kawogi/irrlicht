@@ -185,9 +185,6 @@ void COpenGLExtensionHandler::initExtensions(bool stencilBuffer)
 	}
 
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
-#if defined(_IRR_COMPILE_WITH_SDL_DEVICE_) && !defined(_IRR_COMPILE_WITH_X11_DEVICE_)
-	#define IRR_OGL_LOAD_EXTENSION(x) SDL_GL_GetProcAddress(reinterpret_cast<const char*>(x))
-#else
 	// Accessing the correct function is quite complex
 	// All libraries should support the ARB version, however
 	// since GLX 1.4 the non-ARB version is the official one
@@ -212,7 +209,6 @@ void COpenGLExtensionHandler::initExtensions(bool stencilBuffer)
 	#else
 		#define IRR_OGL_LOAD_EXTENSION(X) glXGetProcAddressARB(reinterpret_cast<const GLubyte*>(X))
 	#endif // workaround
-#endif // Windows, SDL, or Linux
 
 	// get multitexturing function pointers
 	pGlActiveTextureARB = (PFNGLACTIVETEXTUREARBPROC) IRR_OGL_LOAD_EXTENSION("glActiveTextureARB");
@@ -403,16 +399,16 @@ void COpenGLExtensionHandler::initExtensions(bool stencilBuffer)
     pGlGenerateTextureMipmapEXT = (PFNGLGENERATETEXTUREMIPMAPEXTPROC) IRR_OGL_LOAD_EXTENSION("glGenerateTextureMipmapEXT");
 
 	// get vsync extension
-	#if defined(WGL_EXT_swap_control) && !defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
+	#if defined(WGL_EXT_swap_control)
 		pWglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC) IRR_OGL_LOAD_EXTENSION("wglSwapIntervalEXT");
 	#endif
-	#if defined(GLX_SGI_swap_control) && !defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
+	#if defined(GLX_SGI_swap_control)
 		pGlxSwapIntervalSGI = (PFNGLXSWAPINTERVALSGIPROC)IRR_OGL_LOAD_EXTENSION("glXSwapIntervalSGI");
 	#endif
-	#if defined(GLX_EXT_swap_control) && !defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
+	#if defined(GLX_EXT_swap_control)
 		pGlxSwapIntervalEXT = (PFNGLXSWAPINTERVALEXTPROC)IRR_OGL_LOAD_EXTENSION("glXSwapIntervalEXT");
 	#endif
-	#if defined(GLX_MESA_swap_control) && !defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
+	#if defined(GLX_MESA_swap_control)
 		pGlxSwapIntervalMESA = (PFNGLXSWAPINTERVALMESAPROC)IRR_OGL_LOAD_EXTENSION("glXSwapIntervalMESA");
 	#endif
 #endif // use extension pointer

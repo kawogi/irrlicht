@@ -10,7 +10,6 @@ namespace irr
 {
 	class CIrrDeviceWin32;
 	class CIrrDeviceLinux;
-	class CIrrDeviceSDL;
 }
 
 #ifdef _IRR_COMPILE_WITH_OPENGL_

@@ -11,7 +11,7 @@
 
 #include "COpenGLCoreFeature.h"
 #include "COpenGLCoreTexture.h"
-#include "COpenGLCoreCacheHandler.h"
+#inc lude "COpenGLCoreCacheHandler.h"
 
 namespace irr
 {

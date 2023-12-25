@@ -14,7 +14,7 @@
 #include "EDriverFeatures.h"
 #include "fast_atof.h"
 #include "ExtensionHandler.h"
-#include "IContextManager.h"
+#inc lude "IContextManager.h"
 
 namespace irr
 {

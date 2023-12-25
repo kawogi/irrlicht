@@ -11,7 +11,7 @@
 #include "irrArray.h"
 #include "irrString.h"
 
-#include "Common.h"
+#inc lude "Common.h"
 
 namespace irr
 {
