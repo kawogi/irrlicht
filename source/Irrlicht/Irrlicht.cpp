@@ -81,9 +81,6 @@ namespace video
 #ifdef _IRR_COMPILE_WITH_OPENGL_
 			case EDT_OPENGL: return true;
 #endif
-#ifdef _IRR_COMPILE_WITH_OGLES1_
-			case EDT_OGLES1: return true;
-#endif
 #ifdef _IRR_COMPILE_WITH_OGLES2_
 			case EDT_OGLES2: return true;
 #endif

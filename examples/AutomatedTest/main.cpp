@@ -14,8 +14,6 @@ static video::E_DRIVER_TYPE chooseDriver(core::stringc arg_)
 {
 	if (arg_ == "null")
 		return video::EDT_NULL;
-	if (arg_ == "ogles1")
-		return video::EDT_OGLES1;
 	if (arg_ == "ogles2")
 		return video::EDT_OGLES2;
 	if (arg_ == "opengl")
