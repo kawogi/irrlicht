@@ -235,19 +235,6 @@ public:
 				{
 					GLuint textureID = static_cast<TOpenGLTexture*>(DepthStencil)->getOpenGLTextureName();
 
-#ifdef _IRR_EMSCRIPTEN_PLATFORM_	// The WEBGL_depth_texture extension does not allow attaching stencil+depth separate.
-					if (textureFormat == ECF_D24S8)
-					{
-						GLenum attachment = 0x821A; // GL_DEPTH_STENCIL_ATTACHMENT
-						Driver->irrGlFramebufferTexture2D(GL_FRAMEBUFFER, attachment, GL_TEXTURE_2D, textureID, 0);
-						AssignedStencil = true;
-					}
-					else
-					{
-						Driver->irrGlFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, textureID, 0);
-						AssignedStencil = false;
-					}
-#else
 					Driver->irrGlFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, textureID, 0);
 
 					if (textureFormat == ECF_D24S8)
@@ -263,7 +250,6 @@ public:
 
 						AssignedStencil = false;
 					}
-#endif
 					AssignedDepth = true;
 				}
 				else

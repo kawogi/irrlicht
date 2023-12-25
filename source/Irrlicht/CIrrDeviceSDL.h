@@ -12,10 +12,6 @@
 #include "CIrrDeviceStub.h"
 #include "ICursorControl.h"
 
-#ifdef _IRR_EMSCRIPTEN_PLATFORM_
-#include <emscripten/html5.h>
-#endif
-
 #include <SDL.h>
 #include <SDL_syswm.h>
 
@@ -211,24 +207,6 @@ namespace irr
 
 			void updateCursorPos()
 			{
-#ifdef _IRR_EMSCRIPTEN_PLATFORM_
-				EmscriptenPointerlockChangeEvent pointerlockStatus; // let's hope that test is not expensive ...
-				if ( emscripten_get_pointerlock_status(&pointerlockStatus) == EMSCRIPTEN_RESULT_SUCCESS )
-				{
-					if ( pointerlockStatus.isActive )
-					{
-						CursorPos.X += Device->MouseXRel;
-						CursorPos.Y += Device->MouseYRel;
-						Device->MouseXRel = 0;
-						Device->MouseYRel = 0;
-					}
-					else
-					{
-						CursorPos.X = Device->MouseX;
-						CursorPos.Y = Device->MouseY;
-					}
-				}
-#else
 				CursorPos.X = Device->MouseX;
 				CursorPos.Y = Device->MouseY;
 
@@ -240,7 +218,6 @@ namespace irr
 					CursorPos.Y = 0;
 				if (CursorPos.Y > (s32)Device->Height)
 					CursorPos.Y = Device->Height;
-#endif
 			}
 
 			void initCursors();
@@ -260,13 +237,6 @@ namespace irr
 		};
 
 	private:
-
-#ifdef _IRR_EMSCRIPTEN_PLATFORM_
-	static EM_BOOL MouseUpDownCallback(int eventType, const EmscriptenMouseEvent * event, void* userData);
-	static EM_BOOL MouseEnterCallback(int eventType, const EmscriptenMouseEvent *mouseEvent, void *userData);
-	static EM_BOOL MouseLeaveCallback(int eventType, const EmscriptenMouseEvent *mouseEvent, void *userData);
-
-#endif
 		// Check if a key is a known special character with no side effects on text boxes.
 		static bool keyIsKnownSpecial(EKEY_CODE key);
 

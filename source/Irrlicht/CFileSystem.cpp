@@ -29,8 +29,6 @@
 		#include <dirent.h>
 		#include <sys/stat.h>
 		#include <unistd.h>
-#elif defined(_IRR_EMSCRIPTEN_PLATFORM_)
-    #include <unistd.h>
 #endif
 
 namespace irr

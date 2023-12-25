@@ -68,11 +68,7 @@ endif()
 
 # Device
 
-if(EMSCRIPTEN)
-	add_definitions(-D_IRR_EMSCRIPTEN_PLATFORM_ -D_IRR_COMPILE_WITH_EGL_MANAGER_)
-	set(LINUX_PLATFORM TRUE)
-	set(DEVICE "SDL")
-elseif(SOLARIS)
+if(SOLARIS)
 	add_definitions(-D_IRR_SOLARIS_PLATFORM_ -D_IRR_POSIX_API_)
 	set(DEVICE "X11")
 else()
@@ -111,7 +107,7 @@ endif()
 
 # Joystick
 
-if(NOT (BSD OR SOLARIS OR EMSCRIPTEN))
+if(NOT (BSD OR SOLARIS))
 	add_definitions(-D_IRR_COMPILE_WITH_JOYSTICK_EVENTS_)
 endif()
 
@@ -123,15 +119,7 @@ else()
 	set(ENABLE_OPENGL3 FALSE)
 endif()
 
-if(EMSCRIPTEN)
-	set(ENABLE_OPENGL FALSE)
-else()
-	option(ENABLE_OPENGL "Enable OpenGL" TRUE)
-endif()
-
-if(EMSCRIPTEN)
-	set(DEFAULT_GLES2 TRUE)
-endif()
+option(ENABLE_OPENGL "Enable OpenGL" TRUE)
 option(ENABLE_GLES2 "Enable OpenGL ES 2+" ${DEFAULT_GLES2})
 
 if(ENABLE_OPENGL)
@@ -153,7 +141,7 @@ endif()
 
 if(ENABLE_GLES2)
 	add_definitions(-D_IRR_COMPILE_WITH_OGLES2_)
-	if(DEVICE MATCHES "^(WINDOWS|X11)$" OR EMSCRIPTEN)
+	if(DEVICE MATCHES "^(WINDOWS|X11)$")
 		add_definitions(-D_IRR_COMPILE_WITH_EGL_MANAGER_ -D_IRR_OGLES2_USE_EXTPOINTER_)
 	elseif(DEVICE STREQUAL "SDL")
 		set(USE_SDLGL ON)
@@ -421,9 +409,6 @@ target_include_directories(IrrlichtMt
 target_link_libraries(IrrlichtMt PRIVATE ${link_libs})
 
 target_compile_definitions(IrrlichtMt INTERFACE "IRRLICHT_API=${API_IMPORT}")
-if(EMSCRIPTEN)
-	target_compile_definitions(IrrlichtMt PUBLIC IRR_MOBILE_PATHS)
-endif()
 
 set_target_properties(IrrlichtMt PROPERTIES
 	VERSION ${PROJECT_VERSION}
