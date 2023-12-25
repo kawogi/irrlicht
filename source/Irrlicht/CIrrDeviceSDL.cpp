@@ -62,16 +62,6 @@ namespace irr
 			return nullptr;
 		}
 		#endif
-
-		#ifdef _IRR_COMPILE_WITH_WEBGL1_
-		IVideoDriver* createWebGL1Driver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager);
-		#else
-		static IVideoDriver* createWebGL1Driver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager)
-		{
-			os::Printer::log("No WebGL 1 support compiled in.", ELL_ERROR);
-			return nullptr;
-		}
-		#endif
 	} // end namespace video
 
 } // end namespace irr
@@ -416,7 +406,6 @@ bool CIrrDeviceSDL::createWindow()
 			SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
 			break;
 		case video::EDT_OGLES2:
-		case video::EDT_WEBGL1:
 			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
 			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
 			SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
@@ -507,7 +496,6 @@ void CIrrDeviceSDL::createDriver()
 	case video::EDT_OPENGL: VideoDriver = video::createOpenGLDriver(CreationParams, FileSystem, ContextManager); break;
 	case video::EDT_OPENGL3: VideoDriver = video::createOpenGL3Driver(CreationParams, FileSystem, ContextManager); break;
 	case video::EDT_OGLES2: VideoDriver = video::createOGLES2Driver(CreationParams, FileSystem, ContextManager); break;
-	case video::EDT_WEBGL1: VideoDriver = video::createWebGL1Driver(CreationParams, FileSystem, ContextManager); break;
 	default:;
 	}
 	if (!VideoDriver)

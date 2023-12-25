@@ -29,9 +29,6 @@ namespace video
 		/** Supports shaders etc. */
 		EDT_OGLES2,
 
-		//! WebGL1 friendly subset of OpenGL-ES 2.x driver for Emscripten
-		EDT_WEBGL1,
-
 		EDT_OPENGL3,
 
 		//! No driver, just for counting the elements

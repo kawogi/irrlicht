@@ -72,10 +72,6 @@ namespace irr
 #ifdef _IRR_COMPILE_WITH_OGLES2_
         IVideoDriver* createOGLES2Driver(const irr::SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager);
 #endif
-
-#ifdef _IRR_COMPILE_WITH_WEBGL1_
-		IVideoDriver* createWebGL1Driver(const irr::SIrrlichtCreationParameters& params, io::IFileSystem* io, IContextManager* contextManager);
-#endif
 	}
 } // end namespace irr
 
@@ -596,22 +592,6 @@ void CIrrDeviceLinux::createDriver()
 		}
 #else
 		os::Printer::log("No OpenGL-ES2 support compiled in.", ELL_ERROR);
-#endif
-		break;
-	case video::EDT_WEBGL1:
-#ifdef _IRR_COMPILE_WITH_WEBGL1_
-		{
-			video::SExposedVideoData data;
-			data.OpenGLLinux.X11Window = XWindow;
-			data.OpenGLLinux.X11Display = XDisplay;
-
-			ContextManager = new video::CEGLManager();
-			ContextManager->initialize(CreationParams, data);
-
-			VideoDriver = video::createWebGL1Driver(CreationParams, FileSystem, ContextManager);
-		}
-#else
-		os::Printer::log("No WebGL1 support compiled in.", ELL_ERROR);
 #endif
 		break;
 	case video::EDT_NULL:

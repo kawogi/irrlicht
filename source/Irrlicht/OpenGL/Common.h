@@ -36,7 +36,6 @@ namespace video
 		Core,
 		Compat,
 		ES,
-		// WebGL, // TODO
 	};
 
 	struct OpenGLVersion {

@@ -131,13 +131,8 @@ endif()
 
 if(EMSCRIPTEN)
 	set(DEFAULT_GLES2 TRUE)
-	set(DEFAULT_WEBGL1 TRUE)
 endif()
 option(ENABLE_GLES2 "Enable OpenGL ES 2+" ${DEFAULT_GLES2})
-option(ENABLE_WEBGL1 "Enable WebGL (requires GLES2)" ${DEFAULT_WEBGL1})
-if(ENABLE_WEBGL1)
-	set(ENABLE_GLES2 TRUE)
-endif()
 
 if(ENABLE_OPENGL)
 	add_definitions(-D_IRR_COMPILE_WITH_OPENGL_)
@@ -166,10 +161,6 @@ if(ENABLE_GLES2)
 	endif()
 endif()
 
-if(ENABLE_WEBGL1)
-	add_definitions(-D_IRR_COMPILE_WITH_WEBGL1_)
-endif()
-
 # Misc
 
 include(TestBigEndian)
@@ -190,7 +181,6 @@ elseif (ENABLE_GLES2)
 else()
 	message(STATUS "OpenGL ES 2: OFF")
 endif()
-message(STATUS "WebGL: ${ENABLE_WEBGL1}")
 
 # Required libs
 
@@ -346,7 +336,6 @@ elseif(ENABLE_GLES2)
 		COGLES2FixedPipelineRenderer.cpp
 		COGLES2MaterialRenderer.cpp
 		COGLES2Renderer2D.cpp
-		CWebGL1Driver.cpp
 	)
 endif()
 

@@ -84,9 +84,6 @@ namespace video
 #ifdef _IRR_COMPILE_WITH_OGLES2_
 			case EDT_OGLES2: return true;
 #endif
-#ifdef _IRR_COMPILE_WITH_WEBGL1_
-			case EDT_WEBGL1: return true;
-#endif
 			default: return false;
 		}
 	}

@@ -2217,7 +2217,7 @@ COGLES2Driver::~COGLES2Driver()
 
 	bool COGLES2Driver::setRenderTargetEx(IRenderTarget* target, u16 clearFlag, SColor clearColor, f32 clearDepth, u8 clearStencil)
 	{
-		if (target && target->getDriverType() != EDT_OGLES2  && target->getDriverType() != EDT_WEBGL1)
+		if (target && target->getDriverType() != EDT_OGLES2)
 		{
 			os::Printer::log("Fatal Error: Tried to set a render target not owned by OGLES2 driver.", ELL_ERROR);
 			return false;
